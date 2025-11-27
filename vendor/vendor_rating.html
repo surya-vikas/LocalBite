@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vendor Ratings</title>
+
+        <style>
+        * { margin:0; padding:0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+            background:#f5f5f5;
+        }
+
+        /* HEADER */
+        .header {
+            background:#fff;
+            padding:1rem 2rem;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 2px 4px rgba(0,0,0,0.1);
+            position:sticky; top:0;
+            z-index:10;
+        }
+
+        .vendor-name { font-size:1.5rem; font-weight:600; }
+
+        .icon-btn {
+            width:40px; height:40px;
+            border-radius:50%;
+            background:#f5f5f5;
+            border:none;
+            cursor:pointer;
+            display:flex; justify-content:center; align-items:center;
+        }
+
+        /* DROPDOWN */
+        .profile-dropdown { position:relative; }
+        .dropdown-menu {
+            position:absolute; top:48px; right:0;
+            width:200px;
+            background:#fff;
+            border-radius:8px;
+            display:none;
+            box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        }
+        .dropdown-menu.show { display:block; }
+
+        .dropdown-item {
+            padding:0.9rem 1rem;
+            border-bottom:1px solid #eee;
+            cursor:pointer;
+        }
+        .dropdown-item:hover { background:#f5f5f5; }
+
+        /* LAYOUT */
+        .main-container { display:flex; }
+
+        /* SIDEBAR */
+        .sidebar {
+            width:240px;
+            background:#fff;
+            min-height:100vh;
+            box-shadow:2px 0 6px rgba(0,0,0,0.08);
+            padding-top:1.3rem;
+        }
+
+        .sidebar-item {
+            padding:1rem 1.6rem;
+            cursor:pointer;
+            color:#666;
+        }
+        .sidebar-item:hover,
+        .sidebar-item.active {
+            background:#fff3e6;
+            color:#ff6b35;
+            border-left:4px solid #ff6b35;
+        }
+
+        /* CONTENT */
+        .content { flex:1; padding:2rem; }
+
+        .card {
+            background:#fff;
+            border-radius:12px;
+            padding:1.5rem;
+            margin-bottom:1.6rem;
+            box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size:1.4rem;
+            font-weight:600;
+            margin-bottom:1.2rem;
+        }
+
+        /* RATING SUMMARY */
+        .rating-summary {
+            display:flex;
+            gap:2rem;
+            align-items:center;
+        }
+
+        .avg-rating {
+            font-size:3rem;
+            font-weight:700;
+            color:#ff6b35;
+        }
+
+        .stars { color:#ff6b35; font-size:1.2rem; }
+
+        .bar-container { width:200px; height:8px; background:#eee; border-radius:5px; overflow:hidden; }
+        .bar-fill { height:100%; background:#ff6b35; }
+
+        .rating-row {
+            display:flex; align-items:center;
+            justify-content:space-between;
+            margin:6px 0;
+            font-size:0.9rem;
+        }
+
+        /* REVIEWS LIST */
+        .review {
+            padding:1rem 0;
+            border-bottom:1px solid #eee;
+            display:flex; gap:1rem;
+        }
+
+        .review img {
+            width:55px; height:55px;
+            border-radius:50%;
+            object-fit:cover;
+        }
+
+        .review-body { flex:1; }
+        .review-name { font-weight:600; font-size:1rem; }
+        .review-date { font-size:0.8rem; color:#777; margin-bottom:5px; }
+
+        .review-stars { color:#ff6b35; }
+        .review-text { margin-top:5px; color:#444; }
+
+        .delete-review {
+            background:#ff3333; color:#fff;
+            padding:4px 10px; border:none;
+            border-radius:6px; cursor:pointer;
+            height:28px;
+        }
+
+        /* ADD REVIEW BUTTON */
+        .add-btn {
+            background:#ff6b35;
+            color:white;
+            padding:0.8rem 1.3rem;
+            border:none;
+            border-radius:8px;
+            float:right;
+            margin-top:-40px;
+            cursor:pointer;
+        }
+
+        /* MODAL */
+        .modal {
+            position:fixed; top:0; left:0;
+            width:100%; height:100%;
+            background:rgba(0,0,0,0.5);
+            display:none;
+            justify-content:center;
+            align-items:center;
+        }
+        .modal.show { display:flex; }
+
+        .modal-box {
+            background:white;
+            padding:1.5rem;
+            width:380px;
+            border-radius:12px;
+        }
+
+        .form-group { margin-bottom:1rem; }
+        .form-group label { font-size:0.9rem; font-weight:500; display:block; margin-bottom:5px; }
+        .form-group input, .form-group textarea {
+            width:100%; padding:10px;
+            border-radius:6px;
+            border:1px solid #ccc;
+        }
+
+        .btn-row { text-align:right; margin-top:1rem; }
+        .cancel-btn, .save-btn {
+            padding:8px 14px;
+            border:none;
+            cursor:pointer;
+            border-radius:6px;
+        }
+        .cancel-btn { background:#ddd; }
+        .save-btn { background:#ff6b35; color:white; }
+    </style>
+    </head>
+
+    <body>
+
+        <div class="header">
+            <div class="vendor-name">Ratings & Reviews</div>
+
+            <div class="profile-dropdown">
+                <button class="icon-btn" id="profileBtn">
+                    <span>👤</span>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div
+                        class="dropdown-item"
+                        onclick="window.location.href='vendor_profile.html'">
+                        My Profile
+                    </div>
+                    <div
+                        class="dropdown-item"
+                        onclick="location.href='vendor_settings.html'">
+                        Settings
+                    </div>
+                    <div
+                        class="dropdown-item"
+                        onclick="location.href='vendor_help.html'">
+                        Help & Support
+                    </div>
+                    <div class="dropdown-item">Logout</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container">
+
+            <!-- SIDEBAR -->
+            <div class="sidebar">
+                <div class="sidebar-item"
+                    onclick="location.href='vendor_dashboard.html'">
+                    Dashboard
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="location.href='vendor_orders.html'">
+                    Orders
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="location.href='menu.html'">
+                    Menu
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="location.href='vendor_payments.html'">
+                    Payments
+                </div>
+
+                <div class="sidebar-item active"
+                    onclick="location.href='vendor_rating.html'">
+                    Ratings
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="location.href='vendor_settings.html'">
+                    Settings
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+
+                <!-- SUMMARY CARD -->
+                <div class="card">
+                    <div class="section-title">Overall Rating</div>
+
+                    <button class="add-btn" id="openModalBtn">+ Add
+                        Review</button>
+
+                    <div class="rating-summary">
+                        <div>
+                            <div class="avg-rating" id="avgRating">0.0</div>
+                            <div class="stars" id="avgStars">★★★★★</div>
+                            <div id="totalReviews"
+                                style="color:#777; margin-top:5px;">0
+                                reviews</div>
+                        </div>
+
+                        <div>
+                            <!-- Each Star Row -->
+                            <div class="rating-row">
+                                <span>5 ★</span>
+                                <div class="bar-container"><div class="bar-fill"
+                                        id="star5"></div></div>
+                            </div>
+                            <div class="rating-row">
+                                <span>4 ★</span>
+                                <div class="bar-container"><div class="bar-fill"
+                                        id="star4"></div></div>
+                            </div>
+                            <div class="rating-row">
+                                <span>3 ★</span>
+                                <div class="bar-container"><div class="bar-fill"
+                                        id="star3"></div></div>
+                            </div>
+                            <div class="rating-row">
+                                <span>2 ★</span>
+                                <div class="bar-container"><div class="bar-fill"
+                                        id="star2"></div></div>
+                            </div>
+                            <div class="rating-row">
+                                <span>1 ★</span>
+                                <div class="bar-container"><div class="bar-fill"
+                                        id="star1"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVIEWS LIST -->
+                <div class="card">
+                    <div class="section-title">Customer Reviews</div>
+                    <div id="reviewsList"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- REVIEW MODAL -->
+        <div class="modal" id="modal">
+            <div class="modal-box">
+                <h3 style="margin-bottom:1rem;">Add Review</h3>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input id="reviewName" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label>Rating (1-5)</label>
+                    <input id="reviewRating" type="number" min="1" max="5">
+                </div>
+
+                <div class="form-group">
+                    <label>Review</label>
+                    <textarea id="reviewText"></textarea>
+                </div>
+
+                <div class="btn-row">
+                    <button class="cancel-btn" id="closeModal">Cancel</button>
+                    <button class="save-btn" id="saveReview">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+    let reviews = JSON.parse(localStorage.getItem("vendorReviews")) || [];
+
+    const modal = document.getElementById("modal");
+    document.getElementById("openModalBtn").onclick = () => modal.classList.add("show");
+    document.getElementById("closeModal").onclick = () => modal.classList.remove("show");
+
+    function renderReviews() {
+        const list = document.getElementById("reviewsList");
+        list.innerHTML = "";
+
+        let total = reviews.length;
+        let sum = 0;
+        let count = [0,0,0,0,0,0]; // index 1-5
+
+        reviews.forEach((r, i) => {
+            sum += Number(r.rating);
+            count[r.rating]++;
+
+            list.innerHTML += `
+                <div class="review">
+                    <img src="https://i.pravatar.cc/150?img=${i+5}">
+                    <div class="review-body">
+                        <div class="review-name">${r.name}</div>
+                        <div class="review-date">${r.date}</div>
+                        <div class="review-stars">${"★".repeat(r.rating)}</div>
+                        <div class="review-text">${r.text}</div>
+                    </div>
+
+                    <button class="delete-review" onclick="deleteReview(${i})">Delete</button>
+                </div>
+            `;
+        });
+
+        let avg = total ? (sum / total).toFixed(1) : "0.0";
+        document.getElementById("avgRating").textContent = avg;
+        document.getElementById("avgStars").textContent = "★★★★★";
+
+        document.getElementById("totalReviews").textContent = `${total} reviews`;
+
+        // Update star bars
+        [1,2,3,4,5].forEach(star => {
+            let width = total ? (count[star] / total) * 100 : 0;
+            document.getElementById("star"+star).style.width = width + "%";
+        });
+
+        localStorage.setItem("vendorReviews", JSON.stringify(reviews));
+    }
+
+    document.getElementById("saveReview").onclick = () => {
+        let name = reviewName.value;
+        let rating = Number(reviewRating.value);
+        let text = reviewText.value;
+        let date = new Date().toLocaleDateString();
+
+        if (!name || !rating || rating < 1 || rating > 5) {
+            alert("Please enter valid details");
+            return;
+        }
+
+        reviews.push({ name, rating, text, date });
+        modal.classList.remove("show");
+        renderReviews();
+    };
+
+    function deleteReview(i) {
+        reviews.splice(i, 1);
+        renderReviews();
+    }
+
+    renderReviews();
+
+    // DROPDOWN
+    document.getElementById("profileBtn").onclick = (e)=>{
+        e.stopPropagation();
+        document.getElementById("dropdownMenu").classList.toggle("show");
+    };
+    document.addEventListener("click",()=>{
+        document.getElementById("dropdownMenu").classList.remove("show");
+    });
+</script>
+
+    </body>
+</html>

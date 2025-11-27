@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vendor Orders</title>
+
+        <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+        font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+        background:#f5f5f5;
+    }
+
+    /* HEADER */
+    .header {
+        background:#fff;
+        padding:1rem 2rem;
+        display:flex; justify-content:space-between; align-items:center;
+        box-shadow:0 2px 4px rgba(0,0,0,0.1);
+        position:sticky; top:0; z-index:10;
+    }
+
+    .vendor-name { font-size:1.5rem; font-weight:600; }
+
+    .icon-btn {
+        width:40px; height:40px;
+        border-radius:50%; background:#f5f5f5;
+        border:none; cursor:pointer;
+        display:flex; align-items:center; justify-content:center;
+    }
+
+    /* DROPDOWN */
+    .profile-dropdown { position:relative; }
+    .dropdown-menu {
+        position:absolute; top:48px; right:0;
+        background:#fff; border-radius:8px;
+        width:200px; display:none;
+        box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    .dropdown-menu.show { display:block; }
+
+    .dropdown-item {
+        padding:0.9rem 1rem; cursor:pointer;
+        border-bottom:1px solid #eee;
+    }
+    .dropdown-item:hover { background:#f5f5f5; }
+
+    /* LAYOUT */
+    .main-container { display:flex; }
+
+    /* SIDEBAR */
+    .sidebar {
+        width:240px; background:#fff;
+        min-height:100vh;
+        box-shadow:2px 0 6px rgba(0,0,0,0.08);
+        padding-top:1.3rem;
+    }
+
+    .sidebar-item {
+        padding:1rem 1.6rem;
+        cursor:pointer; color:#666;
+    }
+
+    .sidebar-item:hover,
+    .sidebar-item.active {
+        background:#fff3e6;
+        color:#ff6b35;
+        border-left:4px solid #ff6b35;
+    }
+
+    /* CONTENT */
+    .content {
+        flex:1; padding:2rem;
+    }
+
+    .tabs {
+        display:flex; gap:1rem; margin-bottom:1.5rem;
+    }
+
+    .tab-btn {
+        padding:0.7rem 1.4rem;
+        background:white;
+        border:2px solid #e0e0e0;
+        border-radius:25px;
+        cursor:pointer;
+        color:#666;
+        transition:0.2s;
+    }
+
+    .tab-btn.active {
+        background:#ff6b35; color:white;
+        border-color:#ff6b35;
+    }
+
+    .order-card {
+        background:white;
+        padding:1.3rem;
+        border-radius:12px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+        margin-bottom:1rem;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }
+
+    .order-info { max-width:70%; }
+    .order-id { font-size:1.1rem; font-weight:600; color:#333; }
+    .order-cust { font-size:0.95rem; color:#777; margin:3px 0; }
+    .order-items { font-size:0.9rem; color:#555; }
+    .order-amt { margin-top:5px; font-size:1.1rem; color:#ff6b35; font-weight:600; }
+
+    .status-badge {
+        padding:6px 12px;
+        border-radius:8px;
+        color:white;
+        font-size:0.85rem;
+        margin-bottom:8px;
+        display:inline-block;
+    }
+
+    .new { background:#007bff; }
+    .preparing { background:#ffb200; }
+    .ready { background:#28a745; }
+    .completed { background:#6c757d; }
+    .cancelled { background:#dc3545; }
+
+    .order-actions {
+        display:flex; flex-direction:column;
+        gap:8px; align-items:flex-end;
+    }
+
+    .btn-small {
+        padding:6px 12px;
+        border:none; border-radius:6px;
+        cursor:pointer;
+        font-size:0.85rem;
+        color:white;
+    }
+
+    .btn-next { background:#4caf50; }
+    .btn-cancel { background:#ff3333; }
+    .btn-delete { background:#555; }
+
+    @media(max-width:768px){
+        .sidebar { display:none; }
+        .content { padding:1rem; }
+        .order-card { flex-direction:column; align-items:flex-start; }
+        .order-actions { align-items:flex-start; }
+    }
+</style>
+    </head>
+
+    <body>
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="vendor-name">Orders</div>
+
+            <<div class="profile-dropdown">
+          <button class="icon-btn" id="profileBtn">
+            <span>👤</span>
+          </button>
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div
+              class="dropdown-item"
+              onclick="window.location.href='vendor_profile.html'"
+            >
+              My Profile
+            </div>
+            <div
+              class="dropdown-item"
+              onclick="location.href='vendor_settings.html'"
+            >
+              Settings
+            </div>
+            <div
+              class="dropdown-item"
+              onclick="location.href='vendor_help.html'"
+            >
+              Help & Support
+            </div>
+            <div class="dropdown-item">Logout</div>
+          </div>
+        </div>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <div class="main-container">
+
+            <!-- SIDEBAR -->
+            <div class="sidebar"><div class="sidebar-item"
+                    onclick="window.location.href='vendor_dashboard.html'">
+                    Dashboard
+                </div>
+
+                <div class="sidebar-item active"
+                    onclick="window.location.href='vendor_orders.html'">
+                    Orders
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="window.location.href='menu.html'">
+                    Menu
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="window.location.href='vendor_payments.html'">
+                    Payments
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="window.location.href='vendor_rating.html'">
+                    Ratings
+                </div>
+
+                <div class="sidebar-item"
+                    onclick="window.location.href='vendor_settings.html'">
+                    Settings
+                </div>
+
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+
+                <!-- TABS -->
+                <div class="tabs">
+                    <button class="tab-btn active"
+                        data-filter="All">All</button>
+                    <button class="tab-btn" data-filter="New">New</button>
+                    <button class="tab-btn"
+                        data-filter="Preparing">Preparing</button>
+                    <button class="tab-btn" data-filter="Ready">Ready</button>
+                    <button class="tab-btn"
+                        data-filter="Completed">Completed</button>
+                </div>
+
+                <div id="ordersList"></div>
+
+            </div>
+        </div>
+
+        <script>
+    // Dummy orders data
+    let orders = JSON.parse(localStorage.getItem("vendorOrders")) || [
+        {
+            id: 1027,
+            customer:"Arjun",
+            items:"Chicken Biryani, Coke",
+            amount:330,
+            time:"10:32 AM",
+            status:"New"
+        },
+        {
+            id:1026,
+            customer:"Megha",
+            items:"Paneer Butter Masala",
+            amount:180,
+            time:"10:10 AM",
+            status:"Preparing"
+        },
+        {
+            id:1025,
+            customer:"Rohan",
+            items:"Veg Combo",
+            amount:210,
+            time:"9:55 AM",
+            status:"Ready"
+        },
+        {
+            id:1024,
+            customer:"Sneha",
+            items:"Mango Lassi",
+            amount:80,
+            time:"9:20 AM",
+            status:"Completed"
+        }
+    ];
+
+    let currentFilter = "All";
+
+    function renderOrders(){
+        const container = document.getElementById("ordersList");
+        container.innerHTML = "";
+
+        let filtered = currentFilter === "All" ? orders : orders.filter(o=>o.status===currentFilter);
+
+        filtered.forEach((o,i)=>{
+            let badgeClass = o.status.toLowerCase();
+
+            container.innerHTML += `
+                <div class="order-card">
+                    <div class="order-info">
+                        <div class="order-id">Order #${o.id}</div>
+                        <div class="order-cust">${o.customer}</div>
+                        <div class="order-items">${o.items}</div>
+                        <div class="order-amt">₹${o.amount}</div>
+                        <div style="color:#777; margin-top:6px; font-size:0.85rem;">${o.time}</div>
+                    </div>
+
+                    <div class="order-actions">
+                        <span class="status-badge ${badgeClass}">${o.status}</span>
+
+                        ${
+                            o.status !== "Completed" && o.status !== "Cancelled" 
+                            ? `<button class="btn-small btn-next" onclick="nextStage(${i})">Next Stage</button>`
+                            : ""
+                        }
+
+                        ${
+                            o.status !== "Cancelled" && o.status !== "Completed"
+                            ? `<button class="btn-small btn-cancel" onclick="cancelOrder(${i})">Cancel</button>`
+                            : ""
+                        }
+
+                        <button class="btn-small btn-delete" onclick="deleteOrder(${i})">Delete</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        localStorage.setItem("vendorOrders", JSON.stringify(orders));
+    }
+
+    function nextStage(i){
+        let stages = ["New","Preparing","Ready","Completed"];
+        let current = stages.indexOf(orders[i].status);
+        if(current < stages.length -1){
+            orders[i].status = stages[current+1];
+        }
+        renderOrders();
+    }
+
+    function cancelOrder(i){
+        orders[i].status = "Cancelled";
+        renderOrders();
+    }
+
+    function deleteOrder(i){
+        if(confirm("Are you sure you want to delete this order?")){
+            orders.splice(i,1);
+            renderOrders();
+        }
+    }
+
+    // Tabs
+    document.querySelectorAll(".tab-btn").forEach(btn=>{
+        btn.onclick = () =>{
+            document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter;
+            renderOrders();
+        };
+    });
+
+    // Dropdown
+    document.getElementById("profileBtn").onclick = (e)=>{
+        e.stopPropagation();
+        document.getElementById("dropdownMenu").classList.toggle("show");
+    };
+    document.onclick = ()=> document.getElementById("dropdownMenu").classList.remove("show");
+
+    renderOrders();
+</script>
+
+    </body>
+</html>

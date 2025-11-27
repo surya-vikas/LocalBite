@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard</title>
+    <style>
+        /* -- RESET -- */
+        * {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+            background: #f5f5f5;
+        }
+
+        /* HEADER */
+        .header {
+            background: #fff;
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky; top: 0;
+            z-index: 100;
+        }
+
+        .header-left .vendor-name {
+            font-size: 1.6rem; font-weight: 600; color: #333;
+        }
+
+        .header-left .vendor-sub {
+            font-size: 0.9rem; color: #777;
+        }
+
+        .icon-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%; background: #f5f5f5;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute; top: 48px; right: 0;
+            background: #fff; border-radius: 8px;
+            width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .dropdown-menu.show { display: block; }
+
+        .dropdown-item {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer; font-size: 0.95rem;
+        }
+
+        .dropdown-item:hover { background: #f5f5f5; }
+
+        /* LAYOUT */
+        .main-container {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+            padding-top: 1.2rem;
+        }
+
+        .sidebar-item {
+            padding: 1rem 1.6rem;
+            font-size: 1rem;
+            color: #666;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: #fff3e6;
+            color: #ff6b35;
+        }
+
+        .sidebar-item.active {
+            background: #fff3e6;
+            color: #ff6b35;
+            border-left: 4px solid #ff6b35;
+        }
+
+        /* CONTENT AREA */
+        .content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* CARDS */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.4rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 1.6rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: #333;
+        }
+
+        /* STAT CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: #fff7f0;
+            padding: 1.4rem;
+            border-radius: 12px;
+            border-left: 5px solid #ff6b35;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #777;
+            margin-top: 4px;
+            font-size: 0.95rem;
+        }
+
+        /* LIVE ORDERS */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.8rem;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        th {
+            text-align: left;
+            background: #fafafa;
+        }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .status-preparing { background: #fff3cd; color: #856404; }
+        .status-delivered { background: #d4edda; color: #155724; }
+        .status-pending { background: #f8d7da; color: #721c24; }
+
+        /* TOP ITEMS */
+        .top-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 1rem;
+        }
+
+        .item-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .item-card img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .item-card-name {
+            margin-top: 0.6rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .item-card-sold {
+            color: #777;
+            font-size: 0.85rem;
+        }
+
+        /* QUICK ACTIONS */
+        .action-btn {
+            background: #ff6b35;
+            color: #fff;
+            padding: 0.9rem 1.4rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #e55a2b;
+        }
+
+        /* ORDER ACCEPTING TOGGLE */
+        .order-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff7f0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid #ffd7c2;
+            font-size: 0.95rem;
+            color: #ff6b35;
+            cursor: pointer;
+        }
+
+        .order-switch {
+            width: 48px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 24px;
+            position: relative;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .order-switch.active {
+            background: #4caf50;
+        }
+
+        .order-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            transition: .2s;
+        }
+
+        .order-switch.active .order-knob {
+            transform: translateX(24px);
+        }
+
+        /* RESPONSIVE FIX */
+        @media(max-width: 768px){
+            .sidebar { display: none; }
+            .content { padding: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <div class="vendor-name" id="vendorNameHeader">Vendor Dashboard</div>
+            <div class="vendor-sub">Manage orders, earnings & menu</div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:20px;">
+            
+            <!-- Accepting Orders Toggle -->
+            <div class="order-toggle" id="orderToggleBox">
+                Accepting Orders
+                <div class="order-switch" id="orderSwitch">
+                    <div class="order-knob"></div>
+                </div>
+            </div>
+
+            <!-- PROFILE DROPDOWN -->
+            <div class="profile-dropdown">
+                <button class="icon-btn" id="profileBtn"><span>👤</span></button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item" onclick="window.location.href='vendor_profile.html'">My Profile</div>
+                    <div class="dropdown-item" onclick="location.href='vendor_settings.html'">Settings</div>
+                    <div class="dropdown-item" onclick="location.href='vendor_help.html'">Help & Support</div>
+                    <div class="dropdown-item">Logout</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-item active" onclick="window.location.href='vendor_dashboard.html'">Dashboard</div>
+            <div class="sidebar-item" onclick="window.location.href='vendor_orders.html'">Orders</div>
+            <div class="sidebar-item" onclick="window.location.href='menu.html'">Menu</div>
+            <div class="sidebar-item" onclick="window.location.href='vendor_payments.html'">Payments</div>
+            <div class="sidebar-item" onclick="window.location.href='vendor_rating.html'">Ratings</div>
+            <div class="sidebar-item" onclick="window.location.href='vendor_settings.html'">Settings</div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- STAT CARDS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">Today's Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">₹7,980</div>
+                    <div class="stat-label">Today's Earnings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4.4 ⭐</div>
+                    <div class="stat-label">Customer Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">22 mins</div>
+                    <div class="stat-label">Avg Prep Time</div>
+                </div>
+            </div>
+
+            <!-- LIVE ORDERS -->
+            <div class="card">
+                <div class="section-title">Live Orders</div>
+
+                <table>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+
+                    <tr>
+                        <td>#1024</td>
+                        <td>Rahul</td>
+                        <td>Chicken Biryani</td>
+                        <td>₹250</td>
+                        <td><span class="status-badge status-preparing">Preparing</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>#1023</td>
+                        <td>Manoj</td>
+                        <td>Veg Combo</td>
+                        <td>₹180</td>
+                        <td><span class="status-badge status-delivered">Delivered</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>#1022</td>
+                        <td>Nisha</td>
+                        <td>Mango Lassi</td>
+                        <td>₹80</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- TOP SELLING ITEMS -->
+            <div class="card">
+                <div class="section-title">Top Selling Items</div>
+
+                <div class="top-items">
+                    <div class="item-card">
+                        <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=300" alt>
+                        <div class="item-card-name">Chicken Biryani</div>
+                        <div class="item-card-sold">120 sold this week</div>
+                    </div>
+
+                    <div class="item-card">
+                        <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=300" alt>
+                        <div class="item-card-name">Paneer Butter Masala</div>
+                        <div class="item-card-sold">95 sold this week</div>
+                    </div>
+
+                    <div class="item-card">
+                        <img src="https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=300" alt>
+                        <div class="item-card-name">Mango Lassi</div>
+                        <div class="item-card-sold">80 sold this week</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="card">
+                <div class="section-title">Quick Actions</div>
+
+                <button class="action-btn" onclick="window.location.href='vendor_profile.html'">Update Profile</button>
+                <button class="action-btn" style="margin-left:10px;">Add Menu Item</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PROFILE DROPDOWN
+        const btn = document.getElementById('profileBtn');
+        const menu = document.getElementById('dropdownMenu');
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            menu.classList.remove('show');
+        });
+
+        // LOAD RESTAURANT NAME FROM PROFILE
+        const saved = sessionStorage.getItem('vendorProfile');
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data.restaurantName) {
+                document.getElementById('vendorNameHeader').textContent = data.restaurantName;
+            }
+        }
+
+        // ORDER ACCEPTANCE TOGGLE LOGIC
+        const switchBtn = document.getElementById("orderSwitch");
+        const toggleBox = document.getElementById("orderToggleBox");
+
+        function updateToggleUI(state) {
+            if (state) {
+                switchBtn.classList.add("active");
+                toggleBox.childNodes[0].nodeValue = " Accepting Orders ";
+            } else {
+                switchBtn.classList.remove("active");
+                toggleBox.childNodes[0].nodeValue = " Not Accepting ";
+            }
+        }
+
+        // Load saved state
+        let isAccepting = sessionStorage.getItem("acceptingOrders");
+        isAccepting = isAccepting === null ? true : isAccepting === "true";
+
+        updateToggleUI(isAccepting);
+
+        // On click toggle
+        toggleBox.addEventListener("click", () => {
+            isAccepting = !isAccepting;
+            sessionStorage.setItem("acceptingOrders", isAccepting);
+            updateToggleUI(isAccepting);
+        });
+    </script>
+
+</body>
+</html>

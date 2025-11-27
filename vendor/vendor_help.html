@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendor Help & Support</title>
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family:-apple-system, BlinkMacSystemFont,'Segoe UI',Roboto;
+        background:#f5f5f5;
+    }
+
+    /* HEADER */
+    .header {
+        background:#fff;
+        padding:1rem 2rem;
+        display:flex; justify-content:space-between; align-items:center;
+        box-shadow:0 2px 4px rgba(0,0,0,0.1);
+        position:sticky; top:0; z-index:10;
+    }
+
+    .vendor-name {
+        font-size:1.5rem;
+        font-weight:600;
+    }
+
+    .icon-btn {
+        width:40px; height:40px;
+        border-radius:50%; background:#f5f5f5;
+        border:none; cursor:pointer;
+        display:flex; align-items:center; justify-content:center;
+    }
+
+    /* DROPDOWN */
+    .profile-dropdown { position:relative; }
+    .dropdown-menu {
+        position:absolute; top:48px; right:0;
+        width:200px; display:none;
+        background:#fff;
+        border-radius:8px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    .dropdown-menu.show { display:block; }
+
+    .dropdown-item {
+        padding:0.9rem 1rem;
+        border-bottom:1px solid #eee;
+        cursor:pointer;
+        font-size:1rem;
+    }
+    .dropdown-item:hover { background:#f5f5f5; }
+
+    /* LAYOUT */
+    .main-container { display:flex; }
+
+    /* SIDEBAR */
+    .sidebar {
+        width:240px; background:#fff;
+        min-height:100vh;
+        padding-top:1.3rem;
+        box-shadow:2px 0 6px rgba(0,0,0,0.08);
+    }
+
+    .sidebar-item {
+        padding:1rem 1.6rem;
+        cursor:pointer;
+        color:#666;
+        font-size:1rem;
+    }
+
+    .sidebar-item:hover,
+    .sidebar-item.active {
+        background:#fff3e6;
+        color:#ff6b35;
+        border-left:4px solid #ff6b35;
+    }
+
+    /* CONTENT */
+    .content {
+        flex:1;
+        padding:2rem;
+    }
+
+    /* CARD */
+    .card {
+        background:#fff;
+        padding:1.5rem;
+        border-radius:12px;
+        margin-bottom:1.6rem;
+        box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        font-size:1.3rem;
+        font-weight:600;
+        margin-bottom:1.2rem;
+    }
+
+    /* FAQ */
+    .faq-item {
+        margin-bottom:1rem;
+    }
+
+    .faq-q {
+        font-weight:600;
+        font-size:1rem;
+        margin-bottom:5px;
+    }
+
+    .faq-a {
+        font-size:0.95rem;
+        color:#555;
+    }
+
+    /* CONTACT FORM */
+    .form-group {
+        margin-bottom:1rem;
+    }
+
+    .form-group label {
+        font-weight:500;
+        font-size:0.95rem;
+        display:block;
+        margin-bottom:5px;
+    }
+
+    input, textarea, select {
+        width:100%;
+        padding:10px;
+        border-radius:8px;
+        border:1px solid #ccc;
+        font-size:1rem;
+    }
+
+    textarea { resize:vertical; min-height:90px; }
+
+    /* BUTTONS */
+    .btn-primary {
+        background:#ff6b35;
+        color:#fff;
+        border:none;
+        padding:0.8rem 1.3rem;
+        border-radius:8px;
+        font-size:1rem;
+        cursor:pointer;
+    }
+    .btn-primary:hover { background:#e55a2b; }
+
+    .live-chat-btn {
+        background:#4caf50;
+        color:#fff;
+        padding:0.8rem 1.3rem;
+        border:none;
+        border-radius:8px;
+        font-size:1rem;
+        cursor:pointer;
+        margin-top:1rem;
+    }
+    .live-chat-btn:hover { background:#3f9444; }
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+        .sidebar { display:none; }
+        .content { padding:1rem; }
+    }
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="vendor-name">Help & Support</div>
+
+    <div class="profile-dropdown">
+          <button class="icon-btn" id="profileBtn">
+            <span>👤</span>
+          </button>
+          <div class="dropdown-menu" id="dropdownMenu">
+            <div
+              class="dropdown-item"
+              onclick="window.location.href='vendor_profile.html'"
+            >
+              My Profile
+            </div>
+            <div
+              class="dropdown-item"
+              onclick="location.href='vendor_settings.html'"
+            >
+              Settings
+            </div>
+            <div
+              class="dropdown-item"
+              onclick="location.href='vendor_help.html'"
+            >
+              Help & Support
+            </div>
+            <div class="dropdown-item">Logout</div>
+          </div>
+        </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-item" onclick="location.href='vendor_dashboard.html'">Dashboard</div>
+        <div class="sidebar-item" onclick="location.href='vendor_orders.html'">Orders</div>
+        <div class="sidebar-item" onclick="location.href='menu.html'">Menu</div>
+        <div class="sidebar-item" onclick="location.href='vendor_payments.html'">Payments</div>
+        <div class="sidebar-item" onclick="location.href='vendor_rating.html'">Ratings</div>
+        <div class="sidebar-item" onclick="location.href='vendor_settings.html'">Settings</div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- FAQ -->
+        <div class="card">
+            <div class="section-title">Frequently Asked Questions</div>
+
+            <div class="faq-item">
+                <div class="faq-q">How do I update my menu items?</div>
+                <div class="faq-a">Go to Menu → Edit/Delete → Save changes.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">How do I contact support?</div>
+                <div class="faq-a">You can raise a ticket below or email support@foodpanel.com</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">How do I check payments?</div>
+                <div class="faq-a">Go to Payments → View All Transactions.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">Why is my restaurant inactive?</div>
+                <div class="faq-a">Check Settings → Toggle Active Status.</div>
+            </div>
+        </div>
+
+        <!-- RAISE TICKET -->
+        <div class="card">
+            <div class="section-title">Raise a Support Ticket</div>
+
+            <div class="form-group">
+                <label>Your Email</label>
+                <input type="email" placeholder="example@mail.com">
+            </div>
+
+            <div class="form-group">
+                <label>Issue Category</label>
+                <select>
+                    <option>Select</option>
+                    <option>Menu Related</option>
+                    <option>Payments Issue</option>
+                    <option>Order Issue</option>
+                    <option>Technical Problem</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Describe Your Issue</label>
+                <textarea placeholder="Explain the problem..."></textarea>
+            </div>
+
+            <button class="btn-primary">Submit Ticket</button>
+        </div>
+
+        <!-- CONTACT SUPPORT -->
+        <div class="card">
+            <div class="section-title">Contact Support</div>
+
+            <p>Email: <b>support@foodvendor.com</b></p>
+            <p>Phone: <b>+91 98765 43210</b></p>
+
+            <button class="live-chat-btn">💬 Start Live Chat</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Dropdown
+    document.getElementById("profileBtn").onclick = (e)=>{
+        e.stopPropagation();
+        document.getElementById("dropdownMenu").classList.toggle("show");
+    };
+    document.onclick = ()=> document.getElementById("dropdownMenu").classList.remove("show");
+</script>
+
+</body>
+</html>

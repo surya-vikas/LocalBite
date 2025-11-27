@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Profile</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen;
+            background: #f5f5f5;
+        }
+
+        /* HEADER */
+        .header {
+            background: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 1.5rem; font-weight: 600; }
+        .page-subtitle { font-size: 0.9rem; color: #777; }
+
+        .profile-dropdown { position: relative; }
+        .icon-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #f5f5f5; display: flex; justify-content:center;
+            align-items:center; border: none; cursor:pointer;
+        }
+        .icon-btn:hover { background: #e0e0e0; }
+
+        .dropdown-menu {
+            position: absolute; top: 48px; right: 0;
+            background: #fff; width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item {
+            padding: 0.9rem 1rem; cursor:pointer;
+            border-bottom:1px solid #eee;
+        }
+        .dropdown-item:hover { background:#f5f5f5; }
+
+        /* MAIN LAYOUT */
+        .main-container {
+            display: flex;
+            
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+            padding-top: 1rem;
+        }
+
+        .sidebar-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: #fff3e6;
+            color: #ff6b35;
+            border-left-color: #ff6b35;
+        }
+
+        .sidebar-item.active {
+            background: #fff3e6;
+            color: #ff6b35;
+            font-weight: 600;
+            border-left-color: #ff6b35;
+        }
+
+        /* CONTENT */
+        .content {
+            flex: 1;
+            padding: 1.8rem 2rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.6rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card-header-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.3rem;
+        }
+
+        .section-title { font-size: 1.2rem; font-weight: 600; }
+        .tag {
+            padding: 0.3rem 0.6rem; background:#fff3e6;
+            border-radius: 999px; color:#ff6b35; border:1px solid #ffd9bf;
+            font-size: 0.8rem;
+        }
+
+        /* FORM ELEMENTS */
+        .form-group { margin-bottom: 1rem; }
+        label { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.3rem; display:block; }
+        input, select, textarea {
+            width: 100%; border:1px solid #ddd; padding:0.7rem;
+            border-radius:8px; background:#fafafa;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #ff6b35; background: #fff; outline: none;
+        }
+
+        textarea { min-height: 70px; resize: vertical; }
+
+        .hint { font-size:0.8rem; color:#888; }
+
+        .radio-group, .checkbox-row {
+            display: flex; gap: 1rem; flex-wrap: wrap;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.9rem;
+        }
+
+        .image-item {
+            position: relative;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .image-item img {
+            width: 100%; height: 120px; object-fit: cover;
+        }
+        .remove-btn {
+            position: absolute; top:6px; right:6px; width:26px; height:26px;
+            border-radius:50%; background:#f44336; color:#fff;
+            border:none; cursor:pointer;
+        }
+
+        /* FOOTER BUTTONS */
+        .form-footer {
+            display: flex; justify-content: flex-end; gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn {
+            padding: 0.8rem 1.4rem; border-radius: 8px; cursor:pointer;
+            font-size: 0.95rem; border:none;
+        }
+        .btn-secondary { background:#ddd; }
+        .btn-primary { background:#ff6b35; color:#fff; }
+
+        .success-banner {
+            display:none; background:#4caf50; color:#fff;
+            padding:0.8rem; border-radius:8px; text-align:center;
+            margin-bottom:1rem;
+        }
+
+        @media(max-width:768px){
+            .sidebar { display:none; }
+            .content { padding: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-left">
+        <div class="page-title">Vendor Profile</div>
+        <div class="page-subtitle">Complete your restaurant details to start receiving orders</div>
+    </div>
+
+    <div class="profile-dropdown">
+        <button class="icon-btn" id="profileBtn">👤</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-item" onclick="location.href='vendor_dashboard.html'">Dashboard</div>
+            <div class="dropdown-item" onclick="location.href='vendor_orders.html'">Orders</div>
+            <div class="dropdown-item" onclick="location.href='menu.html'">Menu</div>
+            <div class="dropdown-item" onclick="location.href='vendor_payments.html'">Payments</div>
+            <div class="dropdown-item" onclick="location.href='vendor_rating.html'">Ratings</div>
+            <div class="dropdown-item" onclick="location.href='vendor_settings.html'">Settings</div>
+            <div class="dropdown-item" onclick="location.href='vendor_profile.html'">Profile</div>
+            <div class="dropdown-item">Logout</div>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="main-container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="sidebar-item" onclick="location.href='vendor_dashboard.html'">Dashboard</div>
+        <div class="sidebar-item" onclick="location.href='vendor_orders.html'">Orders</div>
+        <div class="sidebar-item" onclick="location.href='menu.html'">Menu</div>
+        <div class="sidebar-item" onclick="location.href='vendor_payments.html'">Payments</div>
+        <div class="sidebar-item" onclick="location.href='vendor_rating.html'">Ratings</div>
+        <div class="sidebar-item" onclick="location.href='vendor_settings.html'">Settings</div>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <div class="success-banner" id="successBanner">Profile saved successfully!</div>
+
+        <!-- PROFILE FORM START -->
+        <form id="profileForm">
+
+            <!-- CARD 1: RESTAURANT OVERVIEW -->
+            <div class="card">
+                <div class="card-header-line">
+                    <div class="section-title">Restaurant Overview</div>
+                    <span class="tag">Basic Details</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Restaurant Name</label>
+                    <input id="restaurantName" type="text" placeholder="Tasty Bites">
+                </div>
+
+                <div class="form-group">
+                    <label>Restaurant Type</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="restType" value="Veg"> Veg</label>
+                        <label><input type="radio" name="restType" value="Non-Veg"> Non-Veg</label>
+                        <label><input type="radio" name="restType" value="Both" checked> Both</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cuisines</label>
+                    <input id="cuisines" type="text" placeholder="Biryani, Chinese, North Indian">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" placeholder="Tell customers what makes your restaurant special"></textarea>
+                </div>
+            </div>
+
+            <!-- CARD 2: CONTACT & ADDRESS -->
+            <div class="card">
+                <div class="card-header-line">
+                    <div class="section-title">Contact & Address</div>
+                    <span class="tag">Owner Details</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Owner Name</label>
+                    <input id="ownerName" type="text" placeholder="Surya Vikas">
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input id="ownerPhone" type="text" placeholder="9876543210">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input id="ownerEmail" type="email" placeholder="vendor@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Address Line 1</label>
+                    <input id="addressLine1" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label>Address Line 2</label>
+                    <input id="addressLine2" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label>City</label>
+                    <input id="city" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label>Pincode</label>
+                    <input id="pincode" type="text">
+                </div>
+            </div>
+
+            <!-- CARD 3: LEGAL -->
+            <div class="card">
+                <div class="card-header-line">
+                    <div class="section-title">Legal & Payments</div>
+                    <span class="tag">Compliance</span>
+                </div>
+
+                <div class="form-group">
+                    <label>PAN Number</label>
+                    <input id="panCard" type="text" maxlength="10">
+                </div>
+
+                <div class="form-group">
+                    <label>GST Number</label>
+                    <input id="gstNumber" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label>UPI ID</label>
+                    <input id="upiId" type="text" placeholder="name@upi">
+                </div>
+
+                <div class="form-group">
+                    <label>Payment QR Code</label>
+                    <div id="qrcode" style="margin-top:10px;"></div>
+                </div>
+            </div>
+
+            <!-- CARD 4: IMAGES -->
+            <div class="card">
+                <div class="card-header-line">
+                    <div class="section-title">Gallery Images</div>
+                    <span class="tag">Visuals</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Images</label>
+                    <input type="file" id="galleryInput" multiple accept="image/*">
+                </div>
+
+                <div class="image-grid" id="galleryPreview"></div>
+            </div>
+
+            <!-- FOOTER BUTTONS -->
+            <div class="form-footer">
+                <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
+                <button type="submit" class="btn btn-primary">Save Profile</button>
+            </div>
+
+        </form>
+
+    </div> <!-- END CONTENT -->
+</div> <!-- END MAIN CONTAINER -->
+
+<!-- QR Code Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+/* DROPDOWN */
+document.getElementById("profileBtn").onclick = (e)=>{
+    e.stopPropagation();
+    document.getElementById("dropdownMenu").classList.toggle("show");
+};
+
+document.addEventListener("click", ()=> {
+    document.getElementById("dropdownMenu").classList.remove("show");
+});
+
+/* IMAGE UPLOAD */
+const galleryState = [];
+const galleryPreview = document.getElementById("galleryPreview");
+const galleryInput = document.getElementById("galleryInput");
+
+galleryInput.addEventListener("change", (e)=>{
+    const files = Array.from(e.target.files);
+    files.forEach(file=>{
+        const reader = new FileReader();
+        reader.onload = (ev)=>{
+            galleryState.push(ev.target.result);
+            renderGallery();
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
+function renderGallery(){
+    galleryPreview.innerHTML = "";
+    galleryState.forEach((src,index)=>{
+        const div = document.createElement("div");
+        div.classList.add("image-item");
+        div.innerHTML = `
+            <img src="${src}">
+            <button class="remove-btn" onclick="removeImage(${index})">×</button>
+        `;
+        galleryPreview.appendChild(div);
+    });
+}
+
+function removeImage(index){
+    galleryState.splice(index,1);
+    renderGallery();
+}
+
+/* QR CODE */
+const qrDiv = document.getElementById("qrcode");
+let qr = null;
+
+document.getElementById("upiId").addEventListener("input",(e)=>{
+    const upi = e.target.value;
+    qrDiv.innerHTML = "";
+    if(upi.includes("@")){
+        qr = new QRCode(qrDiv, {
+            text: `upi://pay?pa=${upi}&pn=Vendor&cu=INR`,
+            width: 150, height:150
+        });
+    }
+});
+
+/* SAVE PROFILE */
+document.getElementById("profileForm").addEventListener("submit",(e)=>{
+    e.preventDefault();
+    document.getElementById("successBanner").style.display = "block";
+    setTimeout(()=> document.getElementById("successBanner").style.display = "none",2500);
+});
+
+/* RESET */
+document.getElementById("resetBtn").onclick = ()=>{
+    if(confirm("Reset all fields?")){
+        location.reload();
+    }
+};
+</script>
+
+</body>
+</html>
