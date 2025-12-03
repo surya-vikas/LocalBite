@@ -44,7 +44,7 @@ Firebase Authentication – Login and role control
 LOCAL SETUP
 ------------------------------------------------------------
 1. Clone the repository:
-   git clone https://github.com/your-username/localbite-frontend.git
+   git clone 
 
 2. Enter the project directory:
    cd localbite-frontend
